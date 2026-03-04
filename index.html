@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anonymized Demo — Interspeech 2026 Submission</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #ffffff;
+            --fg: #111827;
+            --muted: #6b7280;
+            --card: #f9fafb;
+            --border: #e5e7eb;
+            --link: #2563eb;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0b1020;
+                --fg: #e5e7eb;
+                --muted: #9ca3af;
+                --card: #0f172a;
+                --border: #243044;
+                --link: #60a5fa;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            background: var(--bg);
+            color: var(--fg);
+            line-height: 1.5;
+        }
+
+        main {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 720px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.25rem;
+            letter-spacing: 0.2px;
+        }
+
+        p {
+            margin: 0 0 14px 0;
+            color: var(--muted);
+        }
+
+        .note {
+            margin-top: 16px;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        a {
+            color: var(--link);
+        }
+
+        footer {
+            margin-top: 18px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="card" role="region" aria-label="Demo page notice">
+            <h1>Anonymized Demo Page</h1>
+            <p>
+                This is an anonymized demo page for an <strong>Interspeech 2026</strong> submission.
+            </p>
+            <p class="note">
+                Content will be added here (e.g., audio samples, figures, and comparisons). No identifying
+                information is provided on this page.
+            </p>
+            <footer>
+                <span>Last updated: <code id="last-updated">—</code></span>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // Optional: show a simple "last updated" timestamp without any tracking.
+        (function () {
+            const el = document.getElementById('last-updated');
+            if (!el) return;
+            const d = new Date(document.lastModified);
+            el.textContent = isNaN(d.getTime()) ? '—' : d.toISOString().slice(0, 10);
+        })();
+    </script>
+</body>
+
+</html>
