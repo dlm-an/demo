@@ -1,3 +1,9 @@
+/* ── Page ── */
+body {
+    background-color: #f5f6f8;
+}
+
+/* ── Custom scrollbars for tables ── */
 .table-responsive::-webkit-scrollbar {
     -webkit-appearance: none;
 }
@@ -26,7 +32,7 @@
     vertical-align: middle;
 }
 
-/* Inline code styling within prose */
+/* ── Inline code ── */
 .container code {
     background-color: #f0f0f0;
     padding: 0.15em 0.4em;
@@ -35,7 +41,69 @@
     color: #c7254e;
 }
 
-/* Tighter list items for endpoint descriptions */
+/* ── Endpoint description list items ── */
 .list-group-flush .list-group-item {
     font-size: 0.95rem;
+}
+
+/* ── Section headings ── */
+h3 {
+    border-bottom: 3px solid #0d6efd;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+/* ── Sticky first column ── */
+.sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: white;
+}
+
+/* ── DLM-AN row highlight ── */
+.row-highlight>td,
+.row-highlight>th {
+    background-color: #e8f4fd !important;
+}
+
+.sticky-col-highlight {
+    background-color: #e8f4fd !important;
+}
+
+/* Ensure all table cells are opaque so content doesn't show through sticky columns */
+.table-responsive .table td,
+.table-responsive .table th {
+    background-color: white;
+}
+
+.row-highlight>td,
+.row-highlight>th,
+.sticky-col-highlight {
+    background-color: #e8f4fd !important;
+}
+
+/* ── Accent filter nav pills ── */
+.nav-pills-sm .nav-link {
+    padding: 0.25rem 0.65rem;
+    font-size: 0.85rem;
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+    color: #495057;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s;
+}
+
+.nav-pills-sm .nav-link:hover {
+    background-color: #e9ecef;
+}
+
+.nav-pills-sm .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* ── Audio player polish ── */
+audio {
+    border-radius: 20px;
 }

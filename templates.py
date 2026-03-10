@@ -1,13 +1,16 @@
 from typing import List, Iterable, Optional
-
+import re
 from math import ceil
 
 import dominate
 from dominate.tags import *
+from dominate.util import raw as raw_html
 
 
-def header(title: str, sub: str):
-    return h2(title, br(), small(sub), style="text-align: center")
+def header(title: str, sub: str = ""):
+    if sub:
+        return h2(title, br(), small(sub), style="text-align: center")
+    return h2(title, style="text-align: center")
 
 
 def authors_row(names: Iterable[str], emails: Iterable[str]):
@@ -170,3 +173,124 @@ def dense_audio_table(
                             )
                         else:
                             td()
+
+
+# ---------------------------------------------------------------------------
+# Accent-aware table helpers
+# ---------------------------------------------------------------------------
+
+ACCENT_COLORS = {
+    "Arabic": "#d4e6f1",
+    "Hindi": "#fdebd0",
+    "Spanish": "#d5f5e3",
+    "Chinese": "#fadbd8",
+    "Korean": "#e8daef",
+    "Vietnamese": "#fef9e7",
+    "American": "#d6dbdf",
+}
+
+
+def accent_filter_tabs(table_id: str, samples: list):
+    """Generate Bootstrap nav-pills for filtering table columns by accent."""
+    seen = set()
+    accents = []
+    for _, accent, _, _ in samples:
+        if accent not in seen:
+            seen.add(accent)
+            accents.append(accent)
+
+    with ul(cls="nav nav-pills nav-pills-sm mb-2") as _ul:
+        with li(cls="nav-item"):
+            a(
+                "All",
+                cls="nav-link active",
+                href="#",
+                onclick=f"filterAccent('{table_id}', 'all', this); return false;",
+            )
+        for accent in accents:
+            color = ACCENT_COLORS.get(accent, "#ccc")
+            with li(cls="nav-item"):
+                a(
+                    accent,
+                    cls="nav-link",
+                    href="#",
+                    onclick=f"filterAccent('{table_id}', '{accent}', this); return false;",
+                    style=f"border-left: 4px solid {color};",
+                )
+    return _ul
+
+
+def build_accent_table(
+    table_id: str,
+    systems: list,
+    samples: list,
+    root: str = "./samples",
+    control_width_px: int = 240,
+    highlight_prefixes: Optional[List[str]] = None,
+):
+    """Build an audio comparison table with accent-coloured headers."""
+    highlight_prefixes = highlight_prefixes or []
+
+    _wrapper = div(
+        cls="table-responsive", style="overflow-x: scroll", id=table_id
+    )
+    _table = _wrapper.add(table(cls="table table-sm align-middle"))
+
+    with _table:
+        with thead():
+            with tr():
+                th("", scope="col", cls="sticky-col")
+                for spk, act, _, _ in samples:
+                    color = ACCENT_COLORS.get(act, "#fff")
+                    th(
+                        f"{spk} ({act})",
+                        scope="col",
+                        data_accent=act,
+                        style=f"background-color: {color}; white-space: nowrap;",
+                    )
+
+        with tbody():
+            # Text row
+            with tr():
+                th("Text", scope="row", cls="sticky-col")
+                for _, act, _, text_val in samples:
+                    td(
+                        p(text_val, cls="mb-0 small"),
+                        data_accent=act,
+                        style="min-width: 200px;",
+                    )
+
+            # System rows
+            for sys_name, sys_id, fname_pattern in systems:
+                is_hl = any(
+                    sys_name.startswith(pf) for pf in highlight_prefixes
+                )
+                _tr = tr(cls="row-highlight") if is_hl else tr()
+                with _tr:
+                    # Split "Name (detail)" into "Name<br>(detail)"
+                    m = re.match(r'^(.+?)\s*(\(.+\))$', sys_name)
+                    _th = th(
+                        scope="row",
+                        cls="sticky-col"
+                        + (" sticky-col-highlight" if is_hl else ""),
+                        style="white-space: nowrap;",
+                    )
+                    if m:
+                        _th.add(raw_html(f"{m.group(1)}<br><small>{m.group(2)}</small>"))
+                    else:
+                        _th.add(sys_name)
+                    for spk, act, key, _ in samples:
+                        fname = fname_pattern.format(spk=spk, sid=key)
+                        td(
+                            audio(
+                                source(
+                                    src=f"{root}/{sys_id}/{fname}",
+                                    type="audio/wav",
+                                ),
+                                controls="",
+                                style=f"width: {control_width_px}px",
+                                preload="none",
+                            ),
+                            data_accent=act,
+                        )
+    return _wrapper

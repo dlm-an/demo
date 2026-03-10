@@ -168,11 +168,24 @@ with doc.footer:
     script(src="/demo/statics/jquery/jquery-3.7.1.slim.min.js")
     script(src="/demo/statics/bootstrap-5.2.3-dist/js/bootstrap.min.js")
 
-# Script for allowing only one audio to play at the same time:
+# Script for accent-group filtering and single-audio playback:
 doc.children.append(
     script(
         raw(
             """
+    function filterAccent(tableId, accent, tabEl) {
+        var container = document.getElementById(tableId);
+        var cells = container.querySelectorAll('[data-accent]');
+        cells.forEach(function(cell) {
+            cell.style.display = (accent === 'all' || cell.dataset.accent === accent) ? '' : 'none';
+        });
+        var nav = tabEl.closest('.nav');
+        nav.querySelectorAll('.nav-link').forEach(function(t) {
+            t.classList.remove('active');
+        });
+        tabEl.classList.add('active');
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         document.addEventListener("play", function(e) {
             if (e.target.tagName === "AUDIO") {
