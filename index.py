@@ -165,21 +165,28 @@ with doc:
             scroll_hint()
 
 with doc.footer:
-    script(src="/statics/jquery/jquery-3.7.1.slim.min.js")
-    script(src="/statics/bootstrap-5.2.3-dist/bootstrap.min.js")
+    script(src="/demo/statics/jquery/jquery-3.7.1.slim.min.js")
+    script(src="/demo/statics/bootstrap-5.2.3-dist/js/bootstrap.min.js")
 
 # Script for allowing only one audio to play at the same time:
 doc.children.append(
     script(
         raw(
-            """ $(function(){
-        $("audio").on("play", function() {
-            $("audio").not(this).each(function(index, audio) {
-                audio.pause();
-                audio.currentTime = 0;
-            });
-        });
-    }); """
+            """
+    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("play", function(e) {
+            if (e.target.tagName === "AUDIO") {
+                var audios = document.querySelectorAll("audio");
+                audios.forEach(function(audio) {
+                    if (audio !== e.target) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                });
+            }
+        }, true);
+    });
+    """
         )
     )
 )
